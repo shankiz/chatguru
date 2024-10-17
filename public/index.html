@@ -1,527 +1,559 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatguru V2</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #00c3ff;
-            --bg-color: #020b1a;
-            --text-color: #a0e4ff;
-            --container-bg: rgba(4, 32, 55, 0.8);
-            --input-bg: rgba(255, 255, 255, 0.05);
-            --button-hover: #00a0cc;
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(6, 124, 250, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(6, 124, 250, 0.1) 0%, transparent 20%);
-            background-attachment: fixed;
-        }
-        .container {
-            width: 100%;
-            max-width: 400px;
-            background-color: var(--container-bg);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 0 30px rgba(0, 195, 255, 0.3);
-            backdrop-filter: blur(10px);
-        }
-        h1 {
-            color: var(--primary-color);
-            font-size: 2.5em;
-            margin-bottom: 30px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .form-group {
-            margin-bottom: 25px;
-            position: relative;
-        }
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            border: none;
-            border-radius: 8px;
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        input:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--primary-color);
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background-color: var(--primary-color);
-            color: var(--bg-color);
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
-        button:hover {
-            background-color: var(--button-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 195, 255, 0.3);
-        }
-        .form-toggle, .forgot-password {
-            margin-top: 15px;
-            color: var(--text-color);
-            cursor: pointer;
-            text-align: center;
-            font-size: 14px;
-            transition: color 0.3s ease;
-        }
-        .form-toggle:hover, .forgot-password:hover {
-            color: var(--primary-color);
-        }
-        #profile-picture-form {
-            text-align: center;
-        }
-        #profile-picture-form h2 {
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            color: var(--primary-color);
-        }
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            cursor: pointer;
-        }
-        .file-input-wrapper input[type=file] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-        .file-input-wrapper .btn {
-            display: inline-block;
-            padding: 8px 20px;
-            background-color: var(--primary-color);
-            color: var(--bg-color);
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-        .file-input-wrapper:hover .btn {
-            background-color: var(--button-hover);
-        }
-        .file-name {
-            margin-top: 10px;
-            font-size: 14px;
-        }
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .loading {
-            display: none;
-            text-align: center;
-            margin-top: 10px;
-        }
-        
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--primary-color);
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to {transform: rotate(360deg);}
-        }
-        
-        .image-preview-container {
-            width: 200px;
-            margin: 20px auto;
-            position: relative;
-            display: none;
-        }
-        
-        .image-preview-wrapper {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            overflow: hidden;
-        }
-        
-        .image-preview {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .delete-preview {
-            position: absolute;
-            top: -20px;
-            right: 0;
-            background-color: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+try {
+    const messagesContainer = document.getElementById('messages');
+    const userInput = document.getElementById('user-input');
+    const fileInput = document.getElementById('file-input');
+    const sendButton = document.getElementById('send-button');
+    const uploadButton = document.getElementById('upload-button');
+    const cameraButton = document.getElementById('camera-button');
+    const cameraModal = document.getElementById('camera-modal');
+    const cameraFeed = document.getElementById('camera-feed');
+    const captureButton = document.getElementById('capture-button');
+    const closeCameraButton = document.getElementById('close-camera-button');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    const imagePreview = document.getElementById('image-preview');
+    const deleteImageButton = document.getElementById('delete-image');
+    const refreshButton = document.getElementById('refresh-button');
+    const logoutButton = document.getElementById('logout-button');
+    const themeToggle = document.getElementById('theme-toggle');
+    const rootElement = document.documentElement;
 
-        .delete-preview:hover {
-            background-color: rgba(255, 255, 255, 0.9);
-        }
+    let chatId = Date.now().toString();
+    let stream;
+    let currentImageData = null;
+    let currentFacingMode = 'environment';
 
-        .delete-preview i {
-            color: #ff4444;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Chatguru V2</h1>
-        
-        <div id="signup-form">
-            <div class="form-group">
-                <input type="text" id="signup-name" placeholder="Full Name" required>
-            </div>
-            <div class="form-group">
-                <input type="email" id="signup-email" placeholder="Email" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="signup-password" placeholder="Password" required>
-            </div>
-            <button onclick="signUp()">Register</button>
-            <p class="form-toggle" onclick="toggleForm('signin')">Already have an account? Log In</p>
-        </div>
+    // Add these new variables at the top of your script
+    const attachedFilesPreview = document.getElementById('attached-files-preview');
+    let attachedFiles = [];
 
-        <div id="signin-form" style="display: none;">
-            <div class="form-group">
-                <input type="email" id="signin-email" placeholder="Email" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="signin-password" placeholder="Password" required>
-            </div>
-            <button onclick="signIn()">Log In</button>
-            <p class="form-toggle" onclick="toggleForm('signup')">Don't have an account? Register</p>
-            <p class="forgot-password" onclick="toggleForm('forgot-password')">Forgot Password?</p>
-        </div>
+    function addMessage(role, content) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${role === 'You' ? 'user-message' : ''}`;
 
-        <div id="verify-form" style="display: none;">
-            <div class="form-group">
-                <input type="text" id="verification-code" placeholder="Verification Code" required>
-            </div>
-            <button onclick="verifyEmail()">Verify</button>
-        </div>
+        const formattedContent = role === 'AI' ? formatAIResponse(content) : content;
 
-        <div id="profile-picture-form" style="display: none;">
-            <h2>Add a Profile Picture</h2>
-            <div class="file-input-wrapper">
-                <button class="btn">Choose File</button>
-                <input type="file" id="profile-picture" accept="image/*" onchange="previewImage(this)">
-            </div>
-            <p class="file-name" id="file-name"></p>
-            <div class="image-preview-container" id="image-preview-container">
-                <div class="delete-preview" onclick="deletePreview()">
-                    <i class="fas fa-trash"></i>
-                </div>
-                <div class="image-preview-wrapper">
-                    <img id="image-preview" class="image-preview" src="" alt="Profile picture preview">
-                </div>
-            </div>
-            <div class="button-group">
-                <button onclick="skipProfilePicture()">Skip</button>
-                <button onclick="uploadProfilePicture()">Continue</button>
-            </div>
-            <div class="loading" id="upload-loading"></div>
-        </div>
+        messageDiv.innerHTML = `
+            <div class="avatar">${role === 'You' ? 'U' : 'AI'}</div>
+            <div class="content">${formattedContent}</div>
+        `;
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
 
-        <div id="forgot-password-form" style="display: none;">
-            <div class="form-group">
-                <input type="email" id="forgot-password-email" placeholder="Email" required>
-            </div>
-            <button onclick="forgotPassword()">Reset Password</button>
-            <p class="form-toggle" onclick="toggleForm('signin')">Back to Sign In</p>
-        </div>
-    </div>
+    function formatAIResponse(content) {
+        // Remove asterisks
+        content = content.replace(/\*/g, '');
 
-    <script>
-        function toggleForm(formType) {
-            document.getElementById('signin-form').style.display = formType === 'signin' ? 'block' : 'none';
-            document.getElementById('signup-form').style.display = formType === 'signup' ? 'block' : 'none';
-            document.getElementById('verify-form').style.display = formType === 'verify' ? 'block' : 'none';
-            document.getElementById('profile-picture-form').style.display = formType === 'profile-picture' ? 'block' : 'none';
-            document.getElementById('forgot-password-form').style.display = formType === 'forgot-password' ? 'block' : 'none';
-        }
+        // Split the content into paragraphs
+        const paragraphs = content.split('\n\n');
 
-        function updateFileName(input) {
-            const fileName = input.files[0] ? input.files[0].name : 'No file chosen';
-            document.getElementById('file-name').textContent = fileName;
-        }
-
-        function signUp() {
-            const name = document.getElementById('signup-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const urlParams = new URLSearchParams(window.location.search);
-            const referralCode = urlParams.get('ref');
-            
-            if (!name || !email || !password) {
-                alert('Please fill in all fields.');
-                return;
+        // Process each paragraph
+        const formattedParagraphs = paragraphs.map(paragraph => {
+            // Check if it's a numbered list (including nested numbers like 1.1)
+            if (/^\d+(\.\d+)*\./.test(paragraph)) {
+                const listItems = paragraph.split(/\n/).filter(item => item.trim() !== '');
+                return `<ol>${listItems.map(item => {
+                    const match = item.match(/^(\d+(\.\d+)*)\.?\s*(.*)/);
+                    if (match) {
+                        const [, number, , content] = match;
+                        return `<li value="${number}">${content.trim()}</li>`;
+                    }
+                    return `<li>${item.trim()}</li>`;
+                }).join('')}</ol>`;
             }
-            
-            if (!isValidEmail(email)) {
-                alert('Please enter a valid email address.');
-                return;
+            // Check if it's a bullet point list
+            else if (paragraph.includes('\n- ')) {
+                const listItems = paragraph.split('\n- ');
+                return `<ul>${listItems.filter(item => item.trim() !== '').map(item => `<li>${item.trim()}</li>`).join('')}</ul>`;
             }
-            
-            fetch('/auth/signup', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password, referralCode })
-            })
+            // Check if it's a header (assuming headers are followed by a colon)
+            else if (paragraph.includes(':')) {
+                const [title, ...rest] = paragraph.split(':');
+                return `<h3>${title.trim()}:</h3><p>${rest.join(':').trim()}</p>`;
+            }
+            // Regular paragraph
+            else {
+                // Remove any leading numbers (like "1." or "1.1.")
+                return `<p>${paragraph.replace(/^\d+(\.\d+)*\.?\s*/, '').trim()}</p>`;
+            }
+        });
+
+        return formattedParagraphs.join('');
+    }
+
+    function addLoader() {
+        const loaderDiv = document.createElement('div');
+        loaderDiv.className = 'message';
+        loaderDiv.innerHTML = `
+            <div class="avatar">AI</div>
+            <div class="content">
+                <div class="loader"></div>
+            </div>
+        `;
+        messagesContainer.appendChild(loaderDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        return loaderDiv;
+    }
+
+    function showImagePreview(imageData) {
+        currentImageData = imageData;
+        updateAttachedFilesPreview();
+    }
+
+    function logout() {
+        fetch('/logout', { method: 'POST' })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    alert('Sign up successful! Please check your email for the verification code.');
-                    localStorage.setItem('tempUserId', data.userId);
-                    toggleForm('verify');
+                    window.location.href = '/';
                 } else {
-                    alert(data.message || 'Sign up failed. Please try again.');
+                    alert('Logout failed. Please try again.');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred. Please try again.');
+                alert('An error occurred during logout. Please try again.');
             });
-        }
+    }
 
-        function verifyEmail() {
-            const verificationCode = document.getElementById('verification-code').value;
-            const userId = localStorage.getItem('tempUserId');
-            
-            if (!verificationCode) {
-                alert('Please enter the verification code.');
-                return;
-            }
-            
-            fetch('/auth/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId, verificationCode })
-            })
+    function updateUserInfo() {
+        return fetch('/user')
             .then(res => res.json())
             .then(data => {
-                if (data.success) {
-                    alert('Email verified successfully. You can now add a profile picture or skip to sign in.');
-                    toggleForm('profile-picture');
-                } else {
-                    alert(data.message || 'Verification failed. Please try again.');
-                }
+                updateUserProfile(data);
+                return data;
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
+                console.error('Error fetching user data:', error);
+                window.location.href = '/'; // Redirect to login if not authenticated
             });
-        }
+    }
 
-        function uploadProfilePicture() {
-            const pictureInput = document.getElementById('profile-picture');
-            const userId = localStorage.getItem('tempUserId');
-            const loadingIndicator = document.getElementById('upload-loading');
-            
-            if (!pictureInput.files[0]) {
-                alert('Please select a picture to upload.');
-                return;
-            }
+    function updateUserProfile(userData) {
+        const firstName = userData.name.split(' ')[0];
+        document.getElementById('user-name-display').textContent = firstName;
+        document.getElementById('profile-name').textContent = userData.name;
+        document.getElementById('profile-email').textContent = userData.email;
+        document.getElementById('profile-credits').textContent = userData.credits;
+        document.getElementById('user-avatar').src = userData.picture || 'default-avatar.png';
+        document.getElementById('user-credits').textContent = userData.credits;
+        getReferralCode();
+        startReferralCheck();
+    }
 
-            const formData = new FormData();
-            formData.append('picture', pictureInput.files[0]);
-            formData.append('userId', userId);
+    function toggleProfileDropdown() {
+        const dropdown = document.getElementById('profile-dropdown');
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
 
-            loadingIndicator.style.display = 'block';
-
-            fetch('/upload-profile-picture', {
+    async function sendMessage(messageObj) {
+        const loaderDiv = addLoader();
+        try {
+            const response = await fetch('/chat', {
                 method: 'POST',
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                loadingIndicator.style.display = 'none';
-                if (data.success) {
-                    alert('Profile picture uploaded successfully. You will now be logged in.');
-                    autoLogin(userId);
-                } else {
-                    alert(data.message || 'Failed to upload profile picture. Please try again.');
-                }
-            })
-            .catch(error => {
-                loadingIndicator.style.display = 'none';
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    message: messageObj
+                }),
             });
-        }
 
-        function skipProfilePicture() {
-            const userId = localStorage.getItem('tempUserId');
-            autoLogin(userId);
-        }
-
-        function autoLogin(userId) {
-            console.log('Attempting auto-login for userId:', userId);
-            fetch('/auth/auto-login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId })
-            })
-            .then(res => {
-                console.log('Auto-login response status:', res.status);
-                return res.json();
-            })
-            .then(data => {
-                console.log('Auto-login response data:', data);
-                if (data.success) {
-                    localStorage.removeItem('tempUserId');
-                    window.location.href = '/chat';
-                } else {
-                    console.error('Auto-login failed:', data.message);
-                    alert('Failed to log in automatically. Please try signing in manually. Error: ' + data.message);
-                    toggleForm('signin');
-                }
-            })
-            .catch(error => {
-                console.error('Error during auto-login:', error);
-                alert('An error occurred during auto-login. Please try signing in manually. Error: ' + error.message);
-                toggleForm('signin');
-            });
-        }
-
-        function signIn() {
-            const email = document.getElementById('signin-email').value;
-            const password = document.getElementById('signin-password').value;
-            
-            if (!email || !password) {
-                alert('Please fill in all fields.');
-                return;
-            }
-            
-            if (!isValidEmail(email)) {
-                alert('Please enter a valid email address.');
-                return;
-            }
-            
-            fetch('/auth/signin', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = '/chat';
-                } else {
-                    alert(data.message || 'Sign in failed. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            });
-        }
-
-        function forgotPassword() {
-            const email = document.getElementById('forgot-password-email').value;
-            
-            if (!email) {
-                alert('Please enter your email address.');
-                return;
-            }
-            
-            fetch('/auth/forgot-password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Password reset email sent. Please check your email.');
-                    toggleForm('signin');
-                } else {
-                    alert(data.message || 'Failed to send password reset email. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            });
-        }
-
-        function isValidEmail(email) {
-            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return re.test(String(email).toLowerCase());
-        }
-
-        function previewImage(input) {
-            const preview = document.getElementById('image-preview');
-            const previewContainer = document.getElementById('image-preview-container');
-            const file = input.files[0];
-            const reader = new FileReader();
-
-            reader.onloadend = function () {
-                preview.src = reader.result;
-                previewContainer.style.display = 'block';
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
 
-            if (file) {
+            const data = await response.json();
+            loaderDiv.remove(); // Remove the loader
+            addMessage('AI', data.response);
+            document.getElementById('user-credits').textContent = data.creditsLeft;
+            document.getElementById('profile-credits').textContent = data.creditsLeft;
+        } catch (error) {
+            console.error('Error:', error);
+            loaderDiv.remove(); // Remove the loader even if there's an error
+            addMessage('Error', 'Failed to get response from the server.');
+        }
+    }
+
+    function handleSend() {
+        const message = userInput.value.trim();
+        if (message || currentImageData || attachedFiles.length > 0) {
+            let messageContent = '';
+
+            if (currentImageData) {
+                messageContent += `<img src="${currentImageData}" style="max-width: 200px; max-height: 200px;">`;
+            }
+
+            if (attachedFiles.length > 0) {
+                messageContent += '<p>Attached files:</p><ul>';
+                attachedFiles.forEach(file => {
+                    messageContent += `<li>${file.name}</li>`;
+                });
+                messageContent += '</ul>';
+            }
+
+            if (message) {
+                messageContent += `<p>${message}</p>`;
+            }
+
+            addMessage('You', messageContent);
+
+            // Here you would typically send the message and files to your server
+            // For now, we'll just simulate sending the message
+            sendMessage({ text: message, image_url: currentImageData, files: attachedFiles });
+
+            userInput.value = '';
+            clearImagePreview();
+        }
+    }
+
+    function handleFileUpload(files) {
+        for (let file of files) {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    showImagePreview(e.target.result);
+                };
                 reader.readAsDataURL(file);
-                document.getElementById('file-name').textContent = file.name;
             } else {
-                deletePreview();
+                attachedFiles.push(file);
             }
         }
+        updateAttachedFilesPreview();
+    }
 
-        function deletePreview() {
-            const preview = document.getElementById('image-preview');
-            const previewContainer = document.getElementById('image-preview-container');
-            const fileInput = document.getElementById('profile-picture');
-            
-            preview.src = "";
-            previewContainer.style.display = 'none';
-            document.getElementById('file-name').textContent = 'No file chosen';
-            fileInput.value = ''; // Reset file input
+    function resetConversation() {
+        messagesContainer.innerHTML = '';
+        clearImagePreview();
+        chatId = Date.now().toString();
+        const userName = document.getElementById('user-name-display').textContent;
+        addMessage('AI', `Hello ${userName}! How can I assist you today?`);
+    }
+
+    function clearImagePreview() {
+        currentImageData = null;
+        updateAttachedFilesPreview();
+    }
+
+    function closeCameraModal() {
+        cameraModal.style.display = 'none';
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
         }
-    </script>
-</body>
-</html>
+        currentFacingMode = 'environment'; // Reset to default rear camera
+    }
+
+    function debugLog(message) {
+        console.log(`[DEBUG] ${message}`);
+    }
+
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        debugLog(`Initializing theme. Saved theme: ${savedTheme}`);
+        if (savedTheme === 'light') {
+            rootElement.classList.add('light-mode');
+            themeToggle.checked = true;
+        }
+    }
+
+    if (themeToggle) {
+        debugLog('Theme toggle found. Attaching event listener.');
+        themeToggle.addEventListener('click', function(event) {
+            debugLog(`Theme toggle clicked. Checked: ${this.checked}`);
+            if (this.checked) {
+                rootElement.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+                debugLog('Light mode applied');
+            } else {
+                rootElement.classList.remove('light-mode');
+                localStorage.setItem('theme', 'dark');
+                debugLog('Dark mode applied');
+            }
+        });
+    } else {
+        debugLog('Theme toggle not found in the DOM');
+    }
+
+    const themeSlider = document.querySelector('.slider');
+    if (themeSlider) {
+        debugLog('Theme slider found. Attaching click event.');
+        themeSlider.addEventListener('click', function(event) {
+            event.preventDefault();
+            themeToggle.checked = !themeToggle.checked;
+            debugLog(`Theme slider clicked. New toggle state: ${themeToggle.checked}`);
+            if (themeToggle.checked) {
+                rootElement.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+                debugLog('Light mode applied');
+            } else {
+                rootElement.classList.remove('light-mode');
+                localStorage.setItem('theme', 'dark');
+                debugLog('Dark mode applied');
+            }
+        });
+    } else {
+        debugLog('Theme slider not found in the DOM');
+    }
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+        debugLog('DOM fully loaded and parsed');
+        initializeTheme();
+    });
+
+    window.onload = function() {
+        updateUserInfo().then(() => {
+            debugLog('User info updated');
+            const userName = document.getElementById('user-name-display').textContent;
+            if (userName) {
+                addMessage('AI', `Hello ${userName}! How can I assist you today?`);
+            } else {
+                addMessage('AI', 'Hello! How can I assist you today?');
+            }
+        }).catch(error => {
+            console.error('Error updating user info:', error);
+            addMessage('AI', 'Hello! How can I assist you today?');
+        });
+
+        debugLog('Window loaded');
+        if (themeToggle) {
+            debugLog('Theme toggle found in the DOM after window load');
+        } else {
+            debugLog('Theme toggle not found in the DOM after window load');
+        }
+    };
+
+    document.getElementById('profile-header').addEventListener('click', toggleProfileDropdown);
+    logoutButton.addEventListener('click', logout);
+    sendButton.addEventListener('click', handleSend);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleSend();
+    });
+    uploadButton.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+        handleFileUpload(e.target.files);
+    });
+
+    // Updated camera-related event listeners
+    cameraButton.addEventListener('click', openCamera);
+    captureButton.addEventListener('click', captureImage);
+    closeCameraButton.addEventListener('click', closeCameraModal);
+    document.getElementById('rotate-camera-button').addEventListener('click', rotateCamera);
+
+    document.getElementById('new-chat-button').addEventListener('click', resetConversation);
+    document.getElementById('get-credits-button').addEventListener('click', function() {
+        alert('This feature is coming soon!');
+    });
+
+    themeToggle.addEventListener('change', toggleTheme);
+
+    async function getReferralCode() {
+        try {
+            const response = await fetch('/referral-code');
+            const data = await response.json();
+            document.getElementById('referral-link').textContent = data.referralLink;
+            checkClaimableReferrals();
+        } catch (error) {
+            console.error('Error fetching referral code:', error);
+        }
+    }
+
+    async function checkClaimableReferrals() {
+        try {
+            const response = await fetch('/claimable-referrals');
+            const data = await response.json();
+            console.log("Claimable referrals data:", data);
+            const claimButton = document.getElementById('claim-referral');
+            const referralStatus = document.getElementById('referral-status');
+
+            if (data.claimableReferrals > 0) {
+                claimButton.disabled = false;
+                claimButton.classList.add('active');
+                referralStatus.textContent = `${data.claimableReferrals} people signed up through your link. You can now claim ${data.claimableReferrals * 30} credits!`;
+            } else {
+                claimButton.disabled = true;
+                claimButton.classList.remove('active');
+                referralStatus.textContent = "No signups at the moment. Invite friends and earn 30 credits for each one who joins!";
+            }
+        } catch (error) {
+            console.error('Error checking claimable referrals:', error);
+        }
+    }
+
+    async function claimReferralCredits() {
+        try {
+            const response = await fetch('/claim-referral', { method: 'POST' });
+            const data = await response.json();
+            if (data.success) {
+                alert(`Referral credits claimed! You earned ${data.claimedCredits} credits. New credit balance: ${data.newCredits}`);
+                document.getElementById('user-credits').textContent = data.newCredits;
+                document.getElementById('profile-credits').textContent = data.newCredits;
+                checkClaimableReferrals();
+            } else {
+                alert(data.message || "No credits to claim at this time.");
+            }
+        } catch (error) {
+            console.error('Error claiming referral credits:', error);
+            alert('An error occurred while claiming referral credits.');
+        }
+    }
+
+    document.getElementById('copy-referral-link').addEventListener('click', () => {
+        const referralLink = document.getElementById('referral-link').textContent;
+        navigator.clipboard.writeText(referralLink)
+            .then(() => alert('Referral link copied to clipboard!'))
+            .catch(err => console.error('Error copying referral link:', err));
+    });
+
+    document.getElementById('claim-referral').addEventListener('click', claimReferralCredits);
+
+    function startReferralCheck() {
+        checkClaimableReferrals();
+        setInterval(checkClaimableReferrals, 60000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('claim-referral').addEventListener('click', claimReferralCredits);
+    });
+
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    function handleCredentialResponse(response) {
+        console.log("Received credential response", response);
+        const referralCode = getUrlParameter('ref');
+        fetch('/auth/google', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ token: response.credential, referralCode })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {                window.location.href = '/chat';
+                            } else {
+                                console.error('Sign-in failed:', data.message);
+                                alert('Login failed. Please try again.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred. Please try again.');
+                        });
+                    }
+
+                    // New camera-related functions
+                    async function openCamera() {
+                        try {
+                            const constraints = {
+                                video: { facingMode: currentFacingMode }
+                            };
+                            stream = await navigator.mediaDevices.getUserMedia(constraints);
+                            cameraFeed.srcObject = stream;
+                            cameraModal.style.display = 'block';
+                        } catch (err) {
+                            console.error("Error accessing the camera", err);
+                            alert("Error accessing the camera. Please make sure you've granted camera permissions.");
+                        }
+                    }
+
+                    async function rotateCamera() {
+                        currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+                        if (stream) {
+                            stream.getTracks().forEach(track => track.stop());
+                        }
+                        await openCamera();
+                    }
+
+                    function captureImage() {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = cameraFeed.videoWidth;
+                        canvas.height = cameraFeed.videoHeight;
+                        canvas.getContext('2d').drawImage(cameraFeed, 0, 0);
+                        const imageDataUrl = canvas.toDataURL('image/jpeg');
+                        showImagePreview(imageDataUrl);
+                        closeCameraModal();
+                    }
+
+                    function toggleTheme() {
+                        const isLightMode = themeToggle.checked;
+                        if (isLightMode) {
+                            rootElement.classList.add('light-mode');
+                            localStorage.setItem('theme', 'light');
+                        } else {
+                            rootElement.classList.remove('light-mode');
+                            localStorage.setItem('theme', 'dark');
+                        }
+                        console.log(`Theme changed to: ${isLightMode ? 'light' : 'dark'}`);
+                    }
+
+                    // Add this new function to update the attached files preview
+                    function updateAttachedFilesPreview() {
+                        attachedFilesPreview.innerHTML = '';
+                        if (attachedFiles.length > 0 || currentImageData) {
+                            if (currentImageData) {
+                                const imageElement = document.createElement('div');
+                                imageElement.className = 'attached-file';
+                                imageElement.innerHTML = `
+                                    <img src="${currentImageData}" alt="Image preview">
+                                    <span class="file-name">Attached Image</span>
+                                    <button class="delete-file" data-type="image">
+                                        <i class="material-icons">close</i>
+                                    </button>
+                                `;
+                                attachedFilesPreview.appendChild(imageElement);
+                            }
+
+                            attachedFiles.forEach((file, index) => {
+                                const fileElement = document.createElement('div');
+                                fileElement.className = 'attached-file';
+                                fileElement.innerHTML = `
+                                    <img src="${getFileIcon(file.type)}" alt="File icon">
+                                    <span class="file-name">${file.name}</span>
+                                    <button class="delete-file" data-index="${index}">
+                                        <i class="material-icons">close</i>
+                                    </button>
+                                `;
+                                attachedFilesPreview.appendChild(fileElement);
+                            });
+                            attachedFilesPreview.style.display = 'flex';
+                        } else {
+                            attachedFilesPreview.style.display = 'none';
+                        }
+                    }
+
+                    // Add this helper function to get appropriate icons for file types
+                    function getFileIcon(fileType) {
+                        if (fileType.startsWith('image/')) return 'https://cdn-icons-png.flaticon.com/512/1829/1829586.png';
+                        if (fileType.startsWith('video/')) return 'https://cdn-icons-png.flaticon.com/512/3418/3418886.png';
+                        if (fileType.startsWith('audio/')) return 'https://cdn-icons-png.flaticon.com/512/2995/2995101.png';
+                        return 'https://cdn-icons-png.flaticon.com/512/3767/3767084.png';
+                    }
+
+                    // Add an event listener for deleting attached files
+                    attachedFilesPreview.addEventListener('click', (e) => {
+                        const deleteButton = e.target.closest('.delete-file');
+                        if (deleteButton) {
+                            if (deleteButton.dataset.type === 'image') {
+                                clearImagePreview();
+                            } else {
+                                const index = deleteButton.dataset.index;
+                                attachedFiles.splice(index, 1);
+                            }
+                            updateAttachedFilesPreview();
+                        }
+                    });
+
+                } catch (error) {
+                    console.error('An error occurred in the script:', error);
+                }
+
+
+
+
+
