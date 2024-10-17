@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Nexus Chat</title>
+    <title>Chatguru V2</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -92,16 +92,17 @@
                 <input type="text" id="user-input" placeholder="Type your message...">
                 <div class="action-buttons">
                     <button class="action-button" id="camera-button"><i class="material-icons">photo_camera</i></button>
-                    <input type="file" id="file-input" accept="image/*" style="display: none;">
+                    <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
                     <button class="action-button" id="upload-button"><i class="material-icons">attach_file</i></button>
                     <button class="action-button" id="send-button"><i class="material-icons">send</i></button>
                 </div>
             </div>
+            <div id="attached-files-preview" class="attached-files-preview"></div>
+            <div class="image-preview" id="image-preview-container" style="display: none;">
+                <img id="image-preview" src="" alt="Preview">
+                <button id="delete-image"><i class="material-icons">delete</i></button>
+            </div>
         </div>
-    </div>
-    <div id="image-preview-container">
-        <img id="image-preview" src="" alt="Preview">
-        <button id="delete-image"><i class="material-icons">delete</i></button>
     </div>
     <div id="camera-modal">
         <div id="camera-container">
